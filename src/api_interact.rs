@@ -14,7 +14,7 @@ pub struct StockQuote {
     o:  f64,
     pc: f64,
     t:  i128,
-    error: String,
+    //error: String,
 }
 impl StockQuote {
     //Methods
@@ -37,7 +37,7 @@ impl StockQuote {
     pub fn o(&self)  -> f64  { self.o  }
     pub fn pc(&self) -> f64  { self.pc }
     pub fn t(&self)  -> i128 { self.t  }
-    pub fn error(&self) -> &str { &self.error }
+    //pub fn error(&self) -> &str { &self.error }
 }
 
 pub async fn print_exchanges(api_key:&str) -> Result<(), ExitFailure> {    

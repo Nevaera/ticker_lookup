@@ -36,19 +36,36 @@ async fn main() -> Result<(), ExitFailure> {
             tickers.push(opts.ticker());
         } else {
             //Neither -t or -i options used
-            panic!("No ticker or input CSV file specified, please use -h/--help for program options!");
+            panic!("\n\tNo ticker or input CSV file specified, please use -h/--help for program options!\n");
         }
-        
-        if opts.is_stock() {
-            for t in &tickers{
-                let res = api_interact::StockQuote::get(t, opts.api_key()).await?;
-                if opts.is_verbose() {
-                    println!("{} [ Current: ${:.2}, Change: ${:.2}({}%), Hi/Lo: ${:.2}/${:.2}, Open: ${:.2}, Prev. Close: ${:.2} ]", t, res.c(), res.d(), res.dp(), res.h(), res.l(), res.o(), res.pc());
+        if opts.is_quote() {
+            //Quotes
+            if opts.is_stock() {
+                //Stocks
+                for t in &tickers{
+                    let res = api_interact::StockQuote::get(t, opts.api_key()).await?;
+                    if opts.is_verbose() {
+                        println!("{} [ Current: ${:.2}, Change: ${:.2}({}%), Hi/Lo: ${:.2}/${:.2}, Open: ${:.2}, Prev. Close: ${:.2} ]", t, res.c(), res.d(), res.dp(), res.h(), res.l(), res.o(), res.pc());
+                    } else {
+                        println!("{},{},{},{},{},{},{},{}", t, res.c(), res.d(), res.dp(), res.h(), res.l(), res.o(), res.pc());
+                    }
                 }
+            } else {
+                //Crypto
+                println!("The API does not support quotes for Crypto (remove -q/--quote to access crypto candles)");
             }
         } else {
-            // Crypto
-            println!("Crypto!");
+            //Candles
+            if opts.is_stock() {
+                //Stocks
+                println!("ToDo: Implement stock candles");
+                /*for t in &tickers{
+                    
+                }*/
+            } else {
+                //Crypto
+                println!("ToDo: Implement crypto candles");
+            }
         }
     }
     Ok(())

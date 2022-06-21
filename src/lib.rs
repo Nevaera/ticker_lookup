@@ -5,6 +5,7 @@ pub struct OptsSet {
     in_file:    String,
     out_file:   String,
     is_stock:   bool,
+    is_quote:   bool,
     is_list:    bool,
     is_verbose: bool,// = false;
     is_help:    bool,
@@ -20,6 +21,7 @@ impl OptsSet {
             in_file:    "none".to_string(),
             out_file:   "none".to_string(),
             is_stock:   false,
+            is_quote:   false,
             is_list:    false,
             is_verbose: false,
             is_help:    false,
@@ -33,7 +35,8 @@ impl OptsSet {
         self.opts.optopt("e", "exchange", "(required - crypto) specifies the exchange from which to look up tickers", "EXCHNG");
         self.opts.optopt("i", "infile", "(required unless using -t) specifies an input file containing comma-separated tickers", "INFL");
         self.opts.optopt("o", "outfile", "(optional) specifies an output file to save comma-separated outputs", "OUTFL");
-        self.opts.optflag("s", "stock", "specifies whether the program must look up crypto (default) or stock (with -s/--stock)");
+        self.opts.optflag("s", "stock", "specifies that the program must look up stock (with -s/--stock) in stead of crypto (default)");
+        self.opts.optflag("q", "quote", "specifies that the program must look up a quote (with -q/--quote) in stead of candles (default)");
         self.opts.optflag("l", "list", "displays available crypto exchanges");
         self.opts.optflag("v", "verbose", "displays more information on the terminal duing outputs");
         self.opts.optflag("h", "help", "displays this help menu");
@@ -48,11 +51,12 @@ impl OptsSet {
         match matches.opt_present("h") { true => self.is_help    = true, false => self.is_help    = false }
         match matches.opt_present("l") { true => self.is_list    = true, false => self.is_list    = false }
         match matches.opt_present("s") { true => self.is_stock   = true, false => self.is_stock   = false }
+        match matches.opt_present("q") { true => self.is_quote   = true, false => self.is_quote   = false }
         match matches.opt_present("v") { true => self.is_verbose = true, false => self.is_verbose = false }
         //Process OPTS
-        match matches.opt_str("k") { Some(x) => self.api_key = x,  None => self.api_key  = "none".to_string() }
-        match matches.opt_str("t") { Some(x) => self.ticker = x,   None => self.ticker   = "none".to_string() }
-        match matches.opt_str("i") { Some(x) => self.in_file = x,  None => self.in_file  = "none".to_string() } 
+        match matches.opt_str("k") { Some(x) => self.api_key  = x, None => self.api_key  = "none".to_string() }
+        match matches.opt_str("t") { Some(x) => self.ticker   = x, None => self.ticker   = "none".to_string() }
+        match matches.opt_str("i") { Some(x) => self.in_file  = x, None => self.in_file  = "none".to_string() } 
         match matches.opt_str("o") { Some(x) => self.out_file = x, None => self.out_file = "none".to_string() }  
         match matches.opt_str("e") { Some(x) => self.exchange = x, None => self.exchange = "none".to_string() }   
     }
@@ -66,7 +70,8 @@ impl OptsSet {
     pub fn exchange(&self)   -> &str   { &self.exchange   }
     pub fn in_file(&self)    -> &str   { &self.in_file    }
     pub fn out_file(&self)   -> &str   { &self.out_file   }
-    pub fn is_stock(&self)   -> bool   { self.is_stock    }        
+    pub fn is_stock(&self)   -> bool   { self.is_stock    }
+    pub fn is_quote(&self)   -> bool   { self.is_quote    }        
     pub fn is_list(&self)    -> bool   { self.is_list     }
     pub fn is_verbose(&self) -> bool   { self.is_verbose  }
     pub fn is_help(&self)    -> bool   { self.is_help     }
