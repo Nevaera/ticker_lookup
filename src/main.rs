@@ -1,8 +1,9 @@
 
 extern crate getopts;
 use std::env;
+use std::time::{SystemTime, UNIX_EPOCH};
 use exitfailure::ExitFailure;
-//My imports
+
 pub mod lib;
 pub mod api_interact;
 
@@ -21,14 +22,19 @@ async fn main() -> Result<(), ExitFailure> {
     
     //Process FLAGS
     if opts.is_help() { 
+        //Print Help
         opts.print(&program);
-    } else if opts.api_key() == "none" { //API key is needed for everything except looking at help
+    } else if opts.api_key() == "none" {
+         //API key is needed for everything except looking at help
         panic!("\n\tPlease specify your API Key using [-k / -key]!\n  To get an API Key please go to: https://finnhub.io/register\n  (This program only needs a FREE key.)\n");
-    } else if opts.is_list() { 
+    } else if opts.is_list() && opts.exchange() != "none"  && !opts.is_stock() { 
+        //Print Symbols accepted at exchange
+        api_interact::print_symbols(opts.exchange(), opts.api_key()).await?; 
+    } else if opts.is_list() && !opts.is_stock() { 
+        //Print available Exchanges
         api_interact::print_exchanges(opts.api_key()).await?; 
-    } else {
-              
-        //Process what happens if neither -t or -i is used
+    } else {              
+        //Process what happens if -t or -i is used
         let mut tickers = Vec::new();
         if opts.in_file() != "none" {
             println!("Opening {}", opts.in_file());
@@ -56,12 +62,15 @@ async fn main() -> Result<(), ExitFailure> {
             }
         } else {
             //Candles
+            let to = SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_millis();
+            let from = to - 61;
             if opts.is_stock() {
                 //Stocks
-                println!("ToDo: Implement stock candles");
-                /*for t in &tickers{
+                for t in &tickers{
+                    let res = api_interact::Candles::get_stock(t, opts.resolution(), from, to, opts.api_key()).await?;
+                    println!("ToDo: Print stock candles");   
                     
-                }*/
+                }
             } else {
                 //Crypto
                 println!("ToDo: Implement crypto candles");
