@@ -62,18 +62,23 @@ async fn main() -> Result<(), ExitFailure> {
             }
         } else {
             //Candles
-            let to = SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_millis();
-            let from = to - 61;
+            let to = SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_secs();
+            let from = to - 86400; //1 day of data
             if opts.is_stock() {
                 //Stocks
                 for t in &tickers{
+                    println!("Looking up: {} from: {}, to: {} at res: {}", t,from,to, opts.resolution());
                     let res = api_interact::Candles::get_stock(t, opts.resolution(), from, to, opts.api_key()).await?;
                     println!("ToDo: Print stock candles");   
-                    
+                    res.print();
                 }
             } else {
                 //Crypto
-                println!("ToDo: Implement crypto candles");
+                for t in &tickers{
+                    let res = api_interact::Candles::get_crypto(t, opts.resolution(), from, to, opts.api_key()).await?;
+                    println!("ToDo: Print crypto candles");   
+                    
+                }
             }
         }
     }
