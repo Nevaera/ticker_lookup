@@ -96,13 +96,13 @@ impl Candles {
         }
     }
     //Immutable accessors
-    pub fn c(&self) -> &Vec<f64> { &self.c  }
-    pub fn h(&self) -> &Vec<f64> { &self.h  }
-    pub fn l(&self) -> &Vec<f64> { &self.l  }
-    pub fn o(&self) -> &Vec<f64> { &self.o  }
-    pub fn s(&self) -> &str      { &self.s  }
-    pub fn t(&self) -> &Vec<u64> { &self.t  }
-    pub fn v(&self) -> &Vec<u64> { &self.v  }
+    pub fn c(&self) -> &Vec<f64> { &self.c }
+    pub fn h(&self) -> &Vec<f64> { &self.h }
+    pub fn l(&self) -> &Vec<f64> { &self.l }
+    pub fn o(&self) -> &Vec<f64> { &self.o }
+    pub fn s(&self) -> &str      { &self.s }
+    pub fn t(&self) -> &Vec<u64> { &self.t }
+    pub fn v(&self) -> &Vec<u64> { &self.v }
 }
 
 pub async fn print_exchanges(api_key: &str) -> Result<(), ExitFailure> {    
